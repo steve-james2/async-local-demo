@@ -8,7 +8,7 @@ public static class Helpers
 {
     public static string ToPrincipalInfo(this IPrincipal principal)
     {
-        return $"Name={principal?.Identity?.Name} on thread {Thread.CurrentThread.ManagedThreadId} at {DateTime.Now.ToString("hh:MM:ss.fff")}.";
+        return $"Name={principal?.Identity?.Name} on thread {Thread.CurrentThread.ManagedThreadId} at {DateTime.Now.ToString("hh:mm:ss.fff")}.";
     }
 
     public static ClaimsPrincipal CreateClaimsPrincipalWithName(string name)
