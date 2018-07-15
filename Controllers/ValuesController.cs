@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,16 +15,18 @@ namespace NetCoreWebAPI.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IService1 _service1;
 
-        public ValuesController(IService1 service1)
+        public ValuesController(IHttpContextAccessor httpContextAccessor, IService1 service1)
         {
+            _httpContextAccessor = httpContextAccessor;
             _service1 = service1;
         }
 
         private void SetPrincipal()
         {
-            Principal.SetPrincipal(Helpers.CreateClaimsPrincipalWithName(Guid.NewGuid().ToString()));
+           Principal.SetPrincipal(_httpContextAccessor, Helpers.CreateClaimsPrincipalWithName(Guid.NewGuid().ToString()));
         }
 
         // GET api/values
@@ -33,11 +36,11 @@ namespace NetCoreWebAPI.Controllers
             SetPrincipal();
 
             var list = new List<string>();
-            list.Add(Principal.GetPrincipal().ToPrincipalInfo());
+            list.Add(Principal.GetPrincipal(_httpContextAccessor).ToPrincipalInfo());
 
             list.AddRange((await _service1.GetValues()));
 
-            list.Add(Principal.GetPrincipal().ToPrincipalInfo());
+            list.Add(Principal.GetPrincipal(_httpContextAccessor).ToPrincipalInfo());
 
             return list;
         }
